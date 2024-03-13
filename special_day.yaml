@@ -121,7 +121,7 @@ sequence:
           {%- set holy_saturday = as_local(easter - timedelta(days=1)) -%}
           {%- set ascension = as_local(easter + timedelta(days=39)) -%}
           {%- set ascension_sunday = as_local(easter + timedelta(days=42)) -%}
-          {%- set easter_bank = x_weekday_after(1,1,easter.isoweekday(),easter.month,cur_year) -%}
+          {%- set easter_monday = as_local(easter + timedelta(days=1)) -%}
 
           {# Check all the dates relevant to Easter #}
           {%- if cur_date >= shrove_monday and cur_date <= ascension_sunday -%}
@@ -153,8 +153,8 @@ sequence:
               {%- set output_text = "Ascension Day" -%}
             {%- elif cur_date == ascension_sunday -%}
               {%- set output_text = "Ascension Sunday" -%}
-            {%- elif cur_date | string == easter_bank -%}
-              {%- set output_text = "the Easter Bank Holiday" -%}
+            {%- elif cur_date | string == easter_monday -%}
+              {%- set output_text = "Easter Monday" -%}
             {%- endif -%}
           {%- endif -%}
 
