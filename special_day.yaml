@@ -2,7 +2,7 @@ alias: Is It A Special Day
 sequence:
   - variables:
       special_text: |-
-        {# Output is text string that fits with phrase 'today is...'
+        {# Output is a text string that fits with phrase 'today is...'
          # or the string 'unknown'
          #}
 
