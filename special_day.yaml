@@ -4,6 +4,8 @@ sequence:
       special_text: |-
         {# Output is a text string that fits with phrase 'today is...'
          # or the string 'unknown'
+         # Days flagged are those bank holidays and special days in the UK
+         # Edit as appropriate for different countries.
          #}
 
         {# Nth weekday in a month #}
