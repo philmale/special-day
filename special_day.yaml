@@ -149,9 +149,7 @@ sequence:
                     {%- set day_of_lent = days_since_ash_wednesday - sundays_since_ash_wednesday -%}
                     {%- set output_text = "the " + ordinal_suffix_of(day_of_lent) + " day of Lent" -%}
                     {# If you count Sundays as a day of Lent #}
-                    {# set output_text = "the " + ordinal_suffix_of(
-                      (day_of(ash_wednesday, cur_date)|int(0))
-                      ) + " day of Lent" #}
+                    {# set output_text = "the " + ordinal_suffix_of((day_of(ash_wednesday, cur_date)|int(0))) + " day of Lent" #}
             {%- endif -%}
             
             {%- if cur_date == shrove_monday -%}
@@ -266,9 +264,11 @@ sequence:
 
           {%- endif -%}
 
+        {%- endif -%}
+
         {# Specific months in the second half of the year #}
 
-        {%- elif cur_month == 7 -%}
+        {%- if cur_month == 7 -%}
 
           {%- set swan_upping_week = x_weekday_in_month(3,1,7,cur_year) -%}
           {%- set st_swithins_day = as_local(as_datetime('%04d-07-15T00:00:00'%(cur_year))) -%}
@@ -316,7 +316,7 @@ sequence:
 
           {%- if cur_date == all_saints_day -%}
             {%- set output_text = "All Saints' Day" -%}
-          {%- if cur_date == all_souls_day -%}
+          {%- elif cur_date == all_souls_day -%}
             {%- set output_text = "All Souls' Day" -%}
           {%- elif cur_date == bonfire_night -%}
             {%- set output_text = "Guy Fawkes Night" -%} 
@@ -342,10 +342,11 @@ sequence:
           {%- set sixth_night = as_local(christmas_day + timedelta(days = 6)) -%}
           {%- set new_year_eve = as_local(as_datetime('%04d-12-31T00:00:00'%(cur_year))) -%}
 
+          {# Set default text - will be overwritten for any any special day anyway #}
           {%- if cur_date >= first_advent and cur_date < christmas_eve -%}
-            {%- set output_text = "Advent" -%}
+            {%- set output_text = "the " + ordinal_suffix_of((day_of(first_advent, cur_date)|int(0))) + " day of Advent" -%}
           {%- endif -%}
-          
+
           {%- if cur_date == christmas_day -%}
             {%- set output_text = "Christmas Day" -%}
           {%- elif cur_date == first_advent -%}
