@@ -2,10 +2,8 @@ alias: Is It A Special Day
 sequence:
   - variables:
       special_text: |-
-        {# Output is a text string that fits with phrase 'today is...'
+        {# Output is text string that fits with phrase 'today is...'
          # or the string 'unknown'
-         # Days flagged are those bank holidays and special days in the UK
-         # Edit as appropriate for different countries.
          #}
 
         {# Nth weekday in a month #}
@@ -52,7 +50,7 @@ sequence:
         {%- endmacro -%}
 
         {%- macro day_of(d1, d2) -%}
-          {{ ordinal_suffix_of((d2-d1).days + 1) }}
+          {{ (d2-d1).days + 1 }}
         {%- endmacro -%}
 
         {# Mangle now() into midnight with timezone #}
@@ -119,6 +117,10 @@ sequence:
           {%- set mothering_sunday = as_local(easter - timedelta(days=21)) -%}
           {%- set passion_sunday = as_local(easter - timedelta(days=14)) -%}
           {%- set palm_sunday = as_local(easter - timedelta(days=7)) -%}
+          {%- set holy_monday = as_local(easter - timedelta(days=6)) -%}
+          {%- set holy_tuesday = as_local(easter - timedelta(days=5)) -%}
+          {%- set holy_wednesday = as_local(easter - timedelta(days=4)) -%}
+          {%- set maundy_thursday = as_local(easter - timedelta(days=3)) -%}
           {%- set good_friday = as_local(easter - timedelta(days=2)) -%}
           {%- set holy_saturday = as_local(easter - timedelta(days=1)) -%}
           {%- set ascension = as_local(easter + timedelta(days=39)) -%}
@@ -128,9 +130,16 @@ sequence:
           {# Check all the dates relevant to Easter #}
           {%- if cur_date >= shrove_monday and cur_date <= ascension_sunday -%}
 
-            {# Set default text #}
+            {# Set default text - will be overwritten for any Sunday and any special day anyway #}
             {%- if cur_date > ash_wednesday and cur_date < easter -%}
-              {%- set output_text = "the " + day_of(ash_wednesday, cur_date) + " day of Lent" -%}
+                    {%- set days_since_ash_wednesday = day_of(ash_wednesday, cur_date)|int(0) -%}
+                    {%- set sundays_since_ash_wednesday = ((days_since_ash_wednesday + 2) // 7) -%}
+                    {%- set day_of_lent = days_since_ash_wednesday - sundays_since_ash_wednesday -%}
+                    {%- set output_text = "the " + ordinal_suffix_of(day_of_lent) + " day of Lent" -%}
+                    {# If you count Sundays as a day of Lent #}
+                    {# set output_text = "the " + ordinal_suffix_of(
+                      (day_of(ash_wednesday, cur_date)|int(0))
+                      ) + " day of Lent" #}
             {%- endif -%}
             
             {%- if cur_date == shrove_monday -%}
@@ -145,6 +154,14 @@ sequence:
               {%- set output_text = "Passion Sunday" -%}
             {%- elif cur_date == palm_sunday -%}
               {%- set output_text = "Palm Sunday" -%}
+            {%- elif cur_date == holy_monday -%}
+              {%- set output_text = "Holy Monday" -%}
+            {%- elif cur_date == holy_tuesday -%}
+              {%- set output_text = "Holy Tuesday" -%}
+            {%- elif cur_date == holy_wednesday -%}
+              {%- set output_text = "Holy Wednesday" -%}
+            {%- elif cur_date == maundy_thursday -%}
+              {%- set output_text = "Maundy Thursday" -%}
             {%- elif cur_date == good_friday -%}
               {%- set output_text = "Good Friday" -%}
             {%- elif cur_date == holy_saturday -%}
