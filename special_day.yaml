@@ -114,6 +114,9 @@ sequence:
           {%- set shrove_monday = as_local(easter - timedelta(days=48)) -%}
           {%- set shrove_tuesday = as_local(easter - timedelta(days=47)) -%}
           {%- set ash_wednesday = as_local(easter - timedelta(days=46)) -%}
+          {%- set invocabit = as_local(easter - timedelta(days=42)) -%}
+          {%- set reminiscere = as_local(easter - timedelta(days=35)) -%}
+          {%- set oculi = as_local(easter - timedelta(days=28)) -%}
           {%- set mothering_sunday = as_local(easter - timedelta(days=21)) -%}
           {%- set passion_sunday = as_local(easter - timedelta(days=14)) -%}
           {%- set palm_sunday = as_local(easter - timedelta(days=7)) -%}
@@ -148,6 +151,12 @@ sequence:
               {%- set output_text = "Pancake Day" -%} 
             {%- elif cur_date == ash_wednesday -%}
               {%- set output_text = "Ash Wednesday" -%}
+            {%- elif cur_date == invocabit -%}
+              {%- set output_text = "the first Sunday of Lent" -%}
+            {%- elif cur_date == reminiscere -%}
+              {%- set output_text = "the second Sunday of Lent" -%}
+            {%- elif cur_date == oculi -%}
+              {%- set output_text = "the third Sunday of Lent" -%}
             {%- elif cur_date == mothering_sunday -%}
               {%- set output_text = "Mothering Sunday" -%}
             {%- elif cur_date == passion_sunday -%}
