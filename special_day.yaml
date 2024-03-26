@@ -92,7 +92,7 @@ sequence:
           {%- endif -%}
 
         {# Start looking for interesting dates... Easter is somewhere in here #}
-        {%- elif cur_month > 1 and cur_month < 6 -%}
+        {%- elif cur_month > 1 and cur_month < 7 -%}
 
           {#- Easter - based on a calculated date -#}
           {%- set Y = cur_year -%}
@@ -126,12 +126,21 @@ sequence:
           {%- set maundy_thursday = as_local(easter - timedelta(days=3)) -%}
           {%- set good_friday = as_local(easter - timedelta(days=2)) -%}
           {%- set holy_saturday = as_local(easter - timedelta(days=1)) -%}
+          {%- set easter_monday = as_local(easter + timedelta(days=1)) -%}
+          {%- set easter_tuesday = as_local(easter + timedelta(days=2)) -%}
+          {%- set easter_wednesday = as_local(easter + timedelta(days=3)) -%}
+          {%- set easter_thursday = as_local(easter + timedelta(days=4)) -%}
+          {%- set easter_friday = as_local(easter + timedelta(days=5)) -%}
+          {%- set easter_saturday = as_local(easter + timedelta(days=6)) -%}
+          {%- set divine_mercy_sunday = as_local(easter + timedelta(days=7)) -%}
           {%- set ascension = as_local(easter + timedelta(days=39)) -%}
           {%- set ascension_sunday = as_local(easter + timedelta(days=42)) -%}
-          {%- set easter_monday = as_local(easter + timedelta(days=1)) -%}
+          {%- set pentecost = as_local(easter + timedelta(days=50)) -%}
+          {%- set trinity_sunday = as_local(easter + timedelta(days=57)) -%}
+          {%- set sacred_heart = as_local(easter + timedelta(days=69)) -%}
 
-          {# Check all the dates relevant to Easter #}
-          {%- if cur_date >= shrove_monday and cur_date <= ascension_sunday -%}
+          {# Check dates relevant to Easter #}
+          {%- if cur_date >= shrove_monday and cur_date <= sacred_heart -%}
 
             {# Set default text - will be overwritten for any Sunday and any special day anyway #}
             {%- if cur_date > ash_wednesday and cur_date < easter -%}
@@ -177,12 +186,30 @@ sequence:
               {%- set output_text = "Holy Saturday" -%}
             {%- elif cur_date == easter -%}
               {%- set output_text = "Easter Day" -%}
+            {%- elif cur_date | string == easter_monday -%}
+              {%- set output_text = "Easter Monday" -%}
+            {%- elif cur_date | string == easter_tuesday -%}
+              {%- set output_text = "Easter Tuesday" -%}
+            {%- elif cur_date | string == easter_wednesday -%}
+              {%- set output_text = "Easter Wednesday" -%}
+            {%- elif cur_date | string == easter_thursday -%}
+              {%- set output_text = "Easter Thursday" -%}
+            {%- elif cur_date | string == easter_friday -%}
+              {%- set output_text = "Easter Friday" -%}
+            {%- elif cur_date | string == easter_saturday -%}
+              {%- set output_text = "Easter Saturday" -%}
+            {%- elif cur_date | string == divine_mercy_sunday -%}
+              {%- set output_text = "Divine Mercy Sunday" -%}
             {%- elif cur_date == ascension -%}
               {%- set output_text = "Ascension Day" -%}
             {%- elif cur_date == ascension_sunday -%}
               {%- set output_text = "Ascension Sunday" -%}
-            {%- elif cur_date | string == easter_monday -%}
-              {%- set output_text = "Easter Monday" -%}
+            {%- elif cur_date == pentecost -%}
+              {%- set output_text = "Pentecost" -%}
+            {%- elif cur_date == trinity_sunday -%}
+              {%- set output_text = "Trinity Sunday" -%}
+            {%- elif cur_date == sacred_heart -%}
+              {%- set output_text = "the Feast of the Sacred Heart" -%}
             {%- endif -%}
           {%- endif -%}
 
@@ -223,20 +250,23 @@ sequence:
               {%- set output_text = "the Spring Bank Holiday" -%}
             {%- endif -%}
 
+          {%- elif cur_month == 6 -%}
+
+            {%- set fathers_day = x_weekday_in_month(3,7,6,cur_year) -%}
+            {%- set trooping_colour = x_weekday_in_month(3,6,6,cur_year) -%}
+            {%- set st_johns_day = as_local(as_datetime('%04d-06-24T00:00:00'%(cur_year))) -%}
+            
+            {%- if cur_date | string == fathers_day -%}
+              {%- set output_text = "Fathers Day" -%}
+            {%- elif cur_date | string == trooping_colour -%}
+              {%- set output_text = "Trooping of the Colour" -%}
+            {%- elif cur_date | string == st_johns_day -%}
+              {%- set output_text = "the Nativity of John the Baptist" -%}
+            {%- endif -%}
+
           {%- endif -%}
 
         {# Specific months in the second half of the year #}
-
-        {%- elif cur_month == 6 -%}
-
-          {%- set fathers_day = x_weekday_in_month(3,7,6,cur_year) -%}
-          {%- set trooping_colour = x_weekday_in_month(3,6,6,cur_year) -%}
-          
-          {%- if cur_date | string == fathers_day -%}
-            {%- set output_text = "Fathers Day" -%}
-          {%- elif cur_date | string == trooping_colour -%}
-            {%- set output_text = "Trooping of the Colour" -%}
-          {%- endif -%}
 
         {%- elif cur_month == 7 -%}
 
@@ -279,15 +309,21 @@ sequence:
         {%- elif cur_month >= 11 -%}
 
           {%- set all_saints_day = as_local(as_datetime('%04d-11-01T00:00:00'%(cur_year))) -%}
+          {%- set all_souls_day = as_local(as_datetime('%04d-11-02T00:00:00'%(cur_year))) -%}
           {%- set bonfire_night = as_local(as_datetime('%04d-11-05T00:00:00'%(cur_year))) -%}
           {%- set remembrace_day = as_local(as_datetime('%04d-11-11T00:00:00'%(cur_year))) -%}
+          {%- set immaculate_conception = as_local(as_datetime('%04d-12-08T00:00:00'%(cur_year))) -%}
 
           {%- if cur_date == all_saints_day -%}
             {%- set output_text = "All Saints' Day" -%}
+          {%- if cur_date == all_souls_day -%}
+            {%- set output_text = "All Souls' Day" -%}
           {%- elif cur_date == bonfire_night -%}
             {%- set output_text = "Guy Fawkes Night" -%} 
-          {%- elif cur_date == remembrace_day -%}
-            {%- set output_text = "Remembrace Day" -%} 
+          {%- elif cur_date == remembrance_day -%}
+            {%- set output_text = "Remembrance Day" -%} 
+          {%- elif cur_date == immaculate_conception -%}
+            {%- set output_text = "the Feast of the Immaculate Conception" -%} 
           {%- endif -%}
 
           {# Advent can start 27 November #}
