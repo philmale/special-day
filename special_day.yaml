@@ -264,11 +264,9 @@ sequence:
 
           {%- endif -%}
 
-        {%- endif -%}
-
         {# Specific months in the second half of the year #}
 
-        {%- if cur_month == 7 -%}
+        {%- elif cur_month == 7 -%}
 
           {%- set swan_upping_week = x_weekday_in_month(3,1,7,cur_year) -%}
           {%- set st_swithins_day = as_local(as_datetime('%04d-07-15T00:00:00'%(cur_year))) -%}
