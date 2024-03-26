@@ -229,7 +229,11 @@ sequence:
             {%- set stpatricks_day = as_local(as_datetime('%04d-03-17T00:00:00'%(cur_year))) -%}
 
             {%- if cur_date | string == clock_forward -%}
-              {%- set output_text = "the day the clocks move forwards one hour" -%}
+              {%- if output_text == "unknown" -%}
+                {%- set output_text = "the day the clocks move forwards one hour" -%}
+              {%- else -%}
+                {%- set output_text = output_text + " and the clocks move forward one hour" -%}
+              {%- endif -%}
             {%- elif cur_date == stpatricks_day -%}
               {%- set output_text = "Saint Patrick's Day" -%}
             {%- endif -%}
