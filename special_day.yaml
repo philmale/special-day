@@ -53,6 +53,14 @@ sequence:
           {{ (d2-d1).days + 1 }}
         {%- endmacro -%}
 
+        {%- macro to_append_or_not(s1, s2) -%}
+          {%- if s1 == "unknown" -%}
+            {{ s2 }}
+          {%- else -%}
+            {{ s1 + ' and ' + s2 }}
+          {%- endif -%}
+        {%- endmacro -%}
+
         {# Mangle now() into midnight with timezone #}
         {%- set cur_date = now() -%}
         {%- set cur_year = cur_date.year -%}
@@ -184,19 +192,19 @@ sequence:
               {%- set output_text = "Holy Saturday" -%}
             {%- elif cur_date == easter -%}
               {%- set output_text = "Easter Day" -%}
-            {%- elif cur_date | string == easter_monday -%}
+            {%- elif cur_date == easter_monday -%}
               {%- set output_text = "Easter Monday" -%}
-            {%- elif cur_date | string == easter_tuesday -%}
+            {%- elif cur_date == easter_tuesday -%}
               {%- set output_text = "Easter Tuesday" -%}
-            {%- elif cur_date | string == easter_wednesday -%}
+            {%- elif cur_date == easter_wednesday -%}
               {%- set output_text = "Easter Wednesday" -%}
-            {%- elif cur_date | string == easter_thursday -%}
+            {%- elif cur_date == easter_thursday -%}
               {%- set output_text = "Easter Thursday" -%}
-            {%- elif cur_date | string == easter_friday -%}
+            {%- elif cur_date == easter_friday -%}
               {%- set output_text = "Easter Friday" -%}
-            {%- elif cur_date | string == easter_saturday -%}
+            {%- elif cur_date == easter_saturday -%}
               {%- set output_text = "Easter Saturday" -%}
-            {%- elif cur_date | string == divine_mercy_sunday -%}
+            {%- elif cur_date == divine_mercy_sunday -%}
               {%- set output_text = "Divine Mercy Sunday" -%}
             {%- elif cur_date == ascension -%}
               {%- set output_text = "Ascension Day" -%}
@@ -229,13 +237,20 @@ sequence:
             {%- set stpatricks_day = as_local(as_datetime('%04d-03-17T00:00:00'%(cur_year))) -%}
 
             {%- if cur_date | string == clock_forward -%}
-              {%- if output_text == "unknown" -%}
-                {%- set output_text = "the day the clocks move forwards one hour" -%}
-              {%- else -%}
-                {%- set output_text = output_text + " and the clocks move forward one hour" -%}
-              {%- endif -%}
+              {%- set output_text = to_append_or_not(output_text, "the day the clocks move forward") -%}
             {%- elif cur_date == stpatricks_day -%}
-              {%- set output_text = "Saint Patrick's Day" -%}
+              {%- set output_text = to_append_or_not(output_text, "St Patrick's Day") -%}
+            {%- endif -%}
+
+          {%- elif cur_month == 4 -%}
+
+            {%- set april_fools_day = as_local(as_datetime('%04d-04-01T00:00:00'%(cur_year))) -%}
+            {%- set terry_pratchett_day = as_local(as_datetime('%04d-04-28T00:00:00'%(cur_year))) -%}
+
+            {%- if cur_date == terry_pratchett_day -%}
+              {%- set output_text = to_append_or_not(output_text, "Terry Pratchett Day") -%}
+            {%- elif cur_date == april_fools_day -%}
+              {%- set output_text = to_append_or_not(output_text, "April Fool's Day") -%}
             {%- endif -%}
 
           {%- elif cur_month == 5 -%}
@@ -245,11 +260,11 @@ sequence:
             {%- set coronation_day = as_local(as_datetime('%04d-05-06T00:00:00'%(cur_year))) -%}
 
             {%- if cur_date | string == may_early_bank -%}
-              {%- set output_text = "the Early May Bank Holiday" -%}
-            {%- elif cur_date | string == coronation_day -%}
-              {%- set output_text = "Coronation Day" -%}
+              {%- set output_text = to_append_or_not(output_text, "the Early May Bank Holiday") -%}
+            {%- elif cur_date == coronation_day -%}
+              {%- set output_text = to_append_or_not(output_text, "Coronation Day") -%}
             {%- elif cur_date | string == spring_bank -%}
-              {%- set output_text = "the Spring Bank Holiday" -%}
+              {%- set output_text = to_append_or_not(output_text, "the Spring Bank Holiday") -%}
             {%- endif -%}
 
           {%- elif cur_month == 6 -%}
@@ -259,11 +274,11 @@ sequence:
             {%- set st_johns_day = as_local(as_datetime('%04d-06-24T00:00:00'%(cur_year))) -%}
             
             {%- if cur_date | string == fathers_day -%}
-              {%- set output_text = "Fathers Day" -%}
+              {%- set output_text = to_append_or_not(output_text, "Fathers Day") -%}
             {%- elif cur_date | string == trooping_colour -%}
-              {%- set output_text = "Trooping of the Colour" -%}
-            {%- elif cur_date | string == st_johns_day -%}
-              {%- set output_text = "the Nativity of John the Baptist" -%}
+              {%- set output_text = to_append_or_not(output_text, "Trooping of the Colour") -%}
+            {%- elif cur_date == st_johns_day -%}
+              {%- set output_text = to_append_or_not(output_text, "the Nativity of John the Baptist") -%}
             {%- endif -%}
 
           {%- endif -%}
@@ -396,11 +411,7 @@ sequence:
             {%- set lunar_text = "a full moon" -%}
         {%- endif -%}
         {%- if lunar_text != "" -%}
-          {%- if output_text == "unknown" -%}
-            {%- set output_text = lunar_text -%}
-          {%- else -%}
-            {%- set output_text = output_text + " and " + lunar_text -%}
-          {%- endif -%}
+          {%- set output_text = to_append_or_not(output_text, lunar_text) -%}
         {%- endif -%}
 
         {{ output_text }}
