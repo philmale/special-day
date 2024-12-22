@@ -1,5 +1,4 @@
 alias: Is It A Special Day
-alias: Check For Special Day
 sequence:
   - variables:
       special_text: |-
