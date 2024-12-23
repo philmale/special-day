@@ -206,7 +206,7 @@ sequence:
           {%- endif -%}
   
           {# Check for days of advent #}
-          {%- set first_advent = as_local(christmas_eve - timedelta(days = 21 + (christmas_day.isoweekday()))) -%}
+          {%- set first_advent = as_local(christmas_day - timedelta(days = 21 + (christmas_day.isoweekday()))) -%}
           {%- if cur_date > first_advent and cur_date < christmas_eve -%}
             {%- set events.special_events = events.special_events + ["the " + ordinal_suffix_of((day_of(first_advent, cur_date)|int(0))) + " day of Advent"] -%}
           {%- endif -%}
