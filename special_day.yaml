@@ -41,12 +41,16 @@ sequence:
           "the Feast of the Sacred Heart": "E+68d",
 
           "Candlemas": "2/2",
+          "Groundhog Day": "2/2",
+          "Super Bowl": "1/2+2Sun",
           "Valentines Day": "14/2",
           
           "the day the clocks move forward": "1/4-1Sun",
+          "St David's Day": "1/3",
           "St Patrick's Day": "17/3",
 
           "Aril Fool's Day": "1/4",
+          "St George's Day": "23/4",
           "Terry Pratchett Day": "28/4",
 
           "the Early May Bank Holiday": "1/5+1Mon",
@@ -72,7 +76,9 @@ sequence:
           "All Saints' Day": "1/11",
           "All Souls' Day": "2/11",
           "Guy Fawkes Night": "5/11",
+          "Thanksgiving": "1/11+4Thu",
           "Remembrance Day": "11/11",
+          "St Andrew's Day": "30/11",
           "Remembrance Sunday": "1/11+2Sun",
           
           "the Feast of the Immaculate Conception": "8/12",
