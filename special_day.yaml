@@ -82,10 +82,10 @@ sequence:
           "Christmas Eve": "24/12",
           "Christmas Day": "25/12",
           "Boxing Day": "26/12",
-          "Second Night": "27/12",
-          "Third Night": "28/12",
-          "Fourth Night": "29/12",
-          "Fifth Night": "30/12",
+          "Third Night": "27/12",
+          "Fourth Night": "28/12",
+          "Fifth Night": "29/12",
+          "Sixth Night": "30/12",
           "New Year's Eve": "31/12"
         } -%}
 
