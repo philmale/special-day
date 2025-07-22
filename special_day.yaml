@@ -1,4 +1,4 @@
-alias: Is It A Special Day
+alias: Check For Special Day
 sequence:
   - variables:
       special_text: |-
@@ -42,7 +42,7 @@ sequence:
 
           "Candlemas": "2/2",
           "Groundhog Day": "2/2",
-          "Super Bowl": "1/2+2Sun",
+          "Super Bowl Sunday": "1/2+2Sun",
           "Valentines Day": "14/2",
           
           "the day the clocks move forward": "1/4-1Sun",
@@ -55,22 +55,26 @@ sequence:
 
           "the Early May Bank Holiday": "1/5+1Mon",
           "May Day": "1/5",
+          "Star Wars Day": "4/5",
+          "the Revenge of the Fifth (-o-)": "5/5",
           "Coronation Day": "6/5",
           "the Spring Bank Holiday": "1/6-1Mon",
           
           "Fathers Day": "1/6+3Sun",
           "Trooping of the Colour": "1/6+2Sat",
+          "St John's Eve": "23/6",
           "the Nativity of John the Baptist": "24/6",
 
-          "the start of Swan Upping week": "1/7+3Mon",
+          "the start of Swan Upping week": "1/7+3wMon",
           "Saint Swithin's Day": "15/7",
 
-          "the Summer Bank Holiday": "1/8+1Mon",
+          "the Summer Bank Holiday": "1/9-1Mon",
+          "the Perseids Meteor Shower peak viewing night": "12/8",
 
           "the Feast of the Nativity of Mary": "8/9",
           "Michaelmas": "29/9",
 
-          "the day the clocks move backwards": "1/10+1Sun",
+          "the day the clocks move backwards": "1/11-1Sun",
           "Halloween": "31/10",
 
           "All Saints' Day": "1/11",
@@ -106,6 +110,14 @@ sequence:
           {%- endif -%}
         {%- endmacro -%}
 
+        {%- macro textify_list(r=[]) -%}
+          {%- if r | count > 1 -%}
+            {{- (r[:-1] | join(', ')) + ' and ' + r[-1] | string -}}
+          {%- else -%}
+            {{- r | join('') -}}
+          {%- endif -%}
+        {%- endmacro -%}
+
         {%- macro day_of(d1, d2) -%}
           {{ (d2-d1).days + 1 }}
         {%- endmacro -%}
@@ -127,24 +139,49 @@ sequence:
         {%- endmacro -%}
 
         {%- macro get_special_date(date_str) -%}
-          {%- set pattern = '(\\d+/\\d+/(\\d+)|\\d+/\\d+|e)([-+])?(\\d+)?(d|mon|tue|wed|thu|fri|sat|sun)?' -%}
+          {%- set pattern = '(\\d+/\\d+/(\\d+)|\\d+/\\d+|e)([-+])?(\\d+)?(w)?(mon|tue|wed|thu|fri|sat|sun|d)?' -%}
           {%- set match = date_str | lower | regex_findall(pattern) -%}
           {%- if match -%}
             {%- set m = match[0] -%}
             {%- set base_date = m[0] -%}
             {%- set modifier = m[2] -%}
             {%- set amount = m[3]|int if m[3] else 1 -%}
-            {%- set day_type = m[4] -%}
+            {%- set is_week = m[4] == 'w' -%}
+            {%- set day_type = m[5] -%}
             
-            {%- set date = 
-                as_local(as_datetime(easter)) if base_date[0] == 'e' else
-                strptime(base_date ~ '/' ~ now().year, '%d/%m/%Y', none)
-            -%}
+            {%- if base_date[0] == 'e' -%}
+                {%- set date = easter -%}
+            {%- else -%}
+                {%- set date = as_local(strptime(base_date ~ '/' ~ now().year, '%d/%m/%Y', none)) -%}
+            {%- endif -%}
             
-            {%- if date and modifier -%}
+            {%- if modifier -%}
                 {%- if day_type == 'd' -%}
+                    {# Simple day offset #}
                     {%- set date = date + (1 if modifier == '+' else -1) * timedelta(days=amount) -%}
+                {%- elif day_type and is_week -%}
+                    {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
+                    {%- set target_day = days[day_type] -%}
+                    
+                    {%- if modifier == '+' -%}
+                        {%- set month_start = date.replace(day=1) -%}
+                        {%- set first_day_of_week = month_start.isoweekday() -%}
+                        {%- set week1_monday = month_start - timedelta(days=first_day_of_week - 1) -%}
+                        {%- set date = week1_monday + timedelta(days=(target_day - 1) + 7 * (amount - 1)) -%}
+                    {%- else -%}
+                        {%- if date.month == 12 -%}
+                            {%- set next_month = date.replace(year=date.year + 1, month=1, day=1) -%}
+                        {%- else -%}
+                            {%- set next_month = date.replace(month=date.month + 1, day=1) -%}
+                        {%- endif -%}
+                        {%- set month_end = next_month - timedelta(days=1) -%}
+                        {%- set last_day_of_week = month_end.isoweekday() -%}
+                        {%- set days_to_last = (last_day_of_week - target_day) % 7 -%}
+                        {%- set last_occurrence = month_end - timedelta(days=days_to_last) -%}
+                        {%- set date = last_occurrence - timedelta(days=7 * (amount - 1)) -%}
+                    {%- endif -%}
                 {%- elif day_type -%}
+                    {# Original occurrence-based calculation (+3Mon means 3rd Monday after base date) #}
                     {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
                     {%- set target_day = days[day_type] -%}
                     {%- set current_day = date.isoweekday() -%}
@@ -157,50 +194,65 @@ sequence:
                     {%- endif -%}
                 {%- endif -%}
             {%- endif -%}
-            {{- as_local(as_datetime(date)) if date else none -}}
+            {{- as_local(date) -}}
           {%- endif -%}
         {%- endmacro -%}
 
-        {%- set cur_date = as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(now().year, now().month, now().day))) -%}
-        {# set cur_date = as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(2024, 5, 27))) #}
+        {%- set cur_date =
+        as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(now().year, now().month,
+        now().day))) -%}
+
+        {# set cur_date = as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(2025,
+        3, 4))) #}
+
         {%- set cur_year = cur_date.year -%}
         {%- set easter = as_local(as_datetime(easter_date(now().year))) -%}
         {%- set events = namespace(special_events=[]) -%}
 
         {# Check bank holidays #}
-        {%- set christmas_eve = as_local(as_datetime('%04d-12-24T00:00:00'%(cur_year))) -%}
-        {%- set christmas_day = as_local(as_datetime('%04d-12-25T00:00:00'%(cur_year))) -%}
-        {%- set boxing_day = as_local(christmas_day + timedelta(days=1)) -%}
-        {%- set new_years_day = as_local(as_datetime('%04d-01-01T00:00:00'%(cur_year))) -%}
+        {%- set christmas_eve =
+        as_local(as_datetime('%04d-12-24T00:00:00'%(cur_year))) -%}
+        {%- set christmas_day =
+        as_local(as_datetime('%04d-12-25T00:00:00'%(cur_year))) -%}
+        {%- set boxing_day =
+        as_local(as_datetime('%04d-12-26T00:00:00'%(cur_year))) -%}
+        {%- set new_years_day =
+        as_local(as_datetime('%04d-01-01T00:00:00'%(cur_year))) -%}
 
         {# Christmas Day Bank Holiday #}
-        {%- if christmas_day.isoweekday() in [6,7] and cur_date == as_local(christmas_day + timedelta(days=2)) -%}
+        {%- if christmas_day.isoweekday() in [6,7] and cur_date ==
+        as_local(christmas_day + timedelta(days=2)) -%}
           {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
         {%- endif -%}
 
         {# Boxing Day Bank Holiday #}
-        {%- if boxing_day.isoweekday() in [6,7] and cur_date == as_local(boxing_day + timedelta(days=2)) -%}
+        {%- if boxing_day.isoweekday() in [6,7] and cur_date ==
+        as_local(boxing_day + timedelta(days=2)) -%}
           {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
-        {%- elif christmas_day.isoweekday() == 5 and cur_date == as_local(christmas_day + timedelta(days=3)) -%}
+        {%- elif christmas_day.isoweekday() == 5 and cur_date ==
+        as_local(christmas_day + timedelta(days=3)) -%}
           {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
         {%- endif -%}
 
         {# New Year's Day Bank Holiday #}
-        {%- if new_years_day.isoweekday() == 6 and cur_date == as_local(new_years_day + timedelta(days=2)) -%}
+        {%- if new_years_day.isoweekday() == 6 and cur_date ==
+        as_local(new_years_day + timedelta(days=2)) -%}
           {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
-        {%- elif new_years_day.isoweekday() == 7 and cur_date == as_local(new_years_day + timedelta(days=1)) -%}
+        {%- elif new_years_day.isoweekday() == 7 and cur_date ==
+        as_local(new_years_day + timedelta(days=1)) -%}
           {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
         {%- endif -%}
-        
+
         {# Check special days #}
         {%- for day_name, date_str in special_days.items() -%}
-          {%- if cur_date == as_local(as_datetime(get_special_date(date_str))) -%}
+          {%- set special_date = get_special_date(date_str) -%}
+          {%- if special_date and cur_date == as_local(as_datetime(special_date)) -%}
             {%- set events.special_events = events.special_events + [day_name] -%}
           {%- endif -%}
         {%- endfor -%}
 
         {# If not found anything then see if it's lent or advent #}
-        {%- if events.special_events | length == 0 -%}
+        {%- if events.special_events | length == 0  -%}
           {# Check for days of lent #}
           {%- set ash_wednesday = as_local(easter - timedelta(days=46)) -%}
           {%- if cur_date > ash_wednesday and cur_date < easter -%}
@@ -211,7 +263,7 @@ sequence:
             {# If you count sundays as part of lent... #}
             {# set events.special_events = events.special_events + ["the " + ordinal_suffix_of((day_of(ash_wednesday, cur_date)|int(0))) + " day of Lent"] #}
           {%- endif -%}
-  
+
           {# Check for days of advent #}
           {%- set first_advent = as_local(christmas_day - timedelta(days = 21 + (christmas_day.isoweekday()))) -%}
           {%- if cur_date > first_advent and cur_date < christmas_eve -%}
@@ -219,7 +271,15 @@ sequence:
           {%- endif -%}
         {%- endif -%}
 
-        {{ events.special_events | join(' and ') }}
+        {# Check moon phases - add this if it tickles
+         # {%- if states('sensor.moon') == "new_moon" -%}
+         #   {%- set events.special_events = events.special_events + ["a new moon"] -%}
+         # {%- elif states('sensor.moon') == "full_moon" -%}
+         #   {%- set events.special_events = events.special_events + ["a full moon"] -%}
+         # {%- endif -%}
+         #}
+
+        {{ textify_list(events.special_events) }}
   - if:
       - condition: template
         value_template: "{{ special_text != '' }}"
@@ -235,7 +295,7 @@ sequence:
         action: input_boolean.turn_on
     else:
       - data:
-          value: unknown
+          value: ""
         target:
           entity_id: input_text.special_day_text
         action: input_text.set_value
@@ -245,3 +305,7 @@ sequence:
         action: input_boolean.turn_off
 mode: queued
 max: 10
+icon: mdi:calendar
+description: >-
+  Check if today is a special day against a set of calculated and pre-set
+  special days.
