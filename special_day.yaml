@@ -10,42 +10,42 @@ sequence:
           "Twelfth Night": "5/1",
           "Epiphany": "6/1",
           "Burns Night": "25/1",
-          
-          "Shrove Monday": "E-48d",
-          "Pancake Day": "E-47d",
-          "Ash Wednesday": "E-46d",
-          "the first Sunday of Lent": "E-42d",
-          "the second Sunday of Lent": "E-35d",
-          "the third Sunday of Lent": "E-28d",
-          "Mothering Sunday": "E-21d",
-          "Passion Sunday": "E-14d",
-          "Palm Sunday": "E-7d",
-          "Holy Monday": "E-6d",
-          "Holy Tuesday": "E-5d",
-          "Holy Wednesday": "E-4d",
-          "Maundy Thursday": "E-3d",
-          "Good Friday": "E-2d",
-          "Holy Saturday": "E-1d",
-          "Easter Day": "E",
-          "Easter Monday": "E+1d",
-          "Easter Tuesday": "E+2d",
-          "Easter Wednesday": "E+3d",
-          "Easter Thursday": "E+4d",
-          "Easter Friday": "E+5d",
-          "Easter Saturday": "E+6d",
-          "Divine Mercy Sunday": "E+7d",
-          "Ascension Day": "E+39d",
-          "Ascension Sunday": "E+42d",
-          "Pentecost": "E+50d",
-          "Trinity Sunday": "E+56d",
-          "the Feast of the Sacred Heart": "E+68d",
+
+          "Shrove Monday": "easter-48d",
+          "Pancake Day": "Easter-47d",
+          "Ash Wednesday": "Easter-46d",
+          "the first Sunday of Lent": "Easter-42d",
+          "the second Sunday of Lent": "Easter-35d",
+          "the third Sunday of Lent": "Easter-28d",
+          "Mothering Sunday": "Easter-21d",
+          "Passion Sunday": "Easter-14d",
+          "Palm Sunday": "Easter-7d",
+          "Holy Monday": "Easter-6d",
+          "Holy Tuesday": "Easter-5d",
+          "Holy Wednesday": "Easter-4d",
+          "Maundy Thursday": "Easter-3d",
+          "Good Friday": "Easter-2d",
+          "Holy Saturday": "Easter-1d",
+          "Easter Day": "Easter",
+          "Easter Monday": "Easter+1d",
+          "Easter Tuesday": "Easter+2d",
+          "Easter Wednesday": "Easter+3d",
+          "Easter Thursday": "Easter+4d",
+          "Easter Friday": "Easter+5d",
+          "Easter Saturday": "Easter+6d",
+          "Divine Mercy Sunday": "Easter+7d",
+          "Ascension Day": "Easter+39d",
+          "Ascension Sunday": "Easter+42d",
+          "Pentecost": "Easter+49d",
+          "Trinity Sunday": "Easter+56d",
+          "the Feast of the Sacred Heart": "Easter+68d",
 
           "Candlemas": "2/2",
           "Groundhog Day": "2/2",
-          "Super Bowl Sunday": "1/2+2Sun",
+          "Super Bowl Sunday": "1/2+2@sun",
           "Valentines Day": "14/2",
-          
-          "the day the clocks move forward": "1/4-1Sun",
+
+          "the day the clocks move forward": "1/4-1@sun",
           "St David's Day": "1/3",
           "St Patrick's Day": "17/3",
 
@@ -53,43 +53,43 @@ sequence:
           "St George's Day": "23/4",
           "Terry Pratchett Day": "28/4",
 
-          "the Early May Bank Holiday": "1/5+1Mon",
+          "the Early May Bank Holiday": "1/5+1@mon",
           "May Day": "1/5",
           "Star Wars Day": "4/5",
           "the Revenge of the Fifth (-o-)": "5/5",
           "Coronation Day": "6/5",
-          "the Spring Bank Holiday": "1/6-1Mon",
-          
-          "Fathers Day": "1/6+3Sun",
-          "Trooping of the Colour": "1/6+2Sat",
+          "the Spring Bank Holiday": "1/6-1@mon",
+
+          "Fathers Day": "1/6+3@sun",
+          "Trooping of the Colour": "1/6+2@sat",
           "St John's Eve": "23/6",
           "the Nativity of John the Baptist": "24/6",
 
-          "the start of Swan Upping week": "1/7+3wMon",
+          "the start of Swan Upping week": "1/7+3w@mon",
           "Saint Swithin's Day": "15/7",
 
-          "the Summer Bank Holiday": "1/9-1Mon",
+          "the Summer Bank Holiday": "1/9-1@mon",
           "the Perseids Meteor Shower peak viewing night": "12/8",
 
           "the Feast of the Nativity of Mary": "8/9",
           "Michaelmas": "29/9",
 
-          "the day the clocks move backwards": "1/11-1Sun",
+          "the day the clocks move backwards": "1/11-1@sun",
           "Halloween": "31/10",
 
           "All Saints' Day": "1/11",
           "All Souls' Day": "2/11",
           "Guy Fawkes Night": "5/11",
-          "Thanksgiving": "1/11+4Thu",
+          "Thanksgiving": "1/11+4@thu",
           "Remembrance Day": "11/11",
           "St Andrew's Day": "30/11",
-          "Remembrance Sunday": "1/11+2Sun",
-          
+          "Remembrance Sunday": "1/11+2@sun",
+
           "the Feast of the Immaculate Conception": "8/12",
-          "the First Advent Sunday": "25/12-4Sun",
-          "the Second Advent Sunday": "25/12-3Sun",
-          "the Third Advent Sunday": "25/12-2Sun",
-          "the Fourth Advent Sunday": "25/12-1Sun",
+          "the First Advent Sunday": "25/12-4@sun",
+          "the Second Advent Sunday": "25/12-3@sun",
+          "the Third Advent Sunday": "25/12-2@sun",
+          "the Fourth Advent Sunday": "25/12-1@sun",
           "Christmas Eve": "24/12",
           "Christmas Day": "25/12",
           "Boxing Day": "26/12",
@@ -99,6 +99,8 @@ sequence:
           "Sixth Night": "30/12",
           "New Year's Eve": "31/12"
         } -%}
+
+        {# DO NOT EDIT BELOW HERE #}
 
         {%- macro ordinal_suffix_of(i) -%}
           {%- set j = i % 10 -%}
@@ -139,61 +141,62 @@ sequence:
         {%- endmacro -%}
 
         {%- macro get_special_date(date_str) -%}
-          {%- set pattern = '(\\d+/\\d+/(\\d+)|\\d+/\\d+|e)([-+])?(\\d+)?(w)?(mon|tue|wed|thu|fri|sat|sun|d)?' -%}
+          {%- set pattern = '(\\d{1,2}/\\d{1,2}|easter)([+-])?(\\d+)?(d|w|m)?(?:@)?(mon|tue|wed|thu|fri|sat|sun)?' -%}
           {%- set match = date_str | lower | regex_findall(pattern) -%}
           {%- if match -%}
             {%- set m = match[0] -%}
             {%- set base_date = m[0] -%}
-            {%- set modifier = m[2] -%}
-            {%- set amount = m[3]|int if m[3] else 1 -%}
-            {%- set is_week = m[4] == 'w' -%}
-            {%- set day_type = m[5] -%}
-            
-            {%- if base_date[0] == 'e' -%}
-                {%- set date = easter -%}
+            {%- set modifier = m[1] -%}
+            {%- set amount = m[2]|int if m[2] else 0 -%}
+            {%- set unit = m[3] -%}
+            {%- set weekday = m[4] -%}
+
+            {%- if base_date == 'easter' -%}
+              {%- set date = easter -%}
             {%- else -%}
-                {%- set date = as_local(strptime(base_date ~ '/' ~ now().year, '%d/%m/%Y', none)) -%}
+              {%- set date = as_local(strptime(base_date ~ '/' ~ now().year, '%d/%m/%Y', none)) -%}
             {%- endif -%}
-            
+
             {%- if modifier -%}
-                {%- if day_type == 'd' -%}
-                    {# Simple day offset #}
-                    {%- set date = date + (1 if modifier == '+' else -1) * timedelta(days=amount) -%}
-                {%- elif day_type and is_week -%}
-                    {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
-                    {%- set target_day = days[day_type] -%}
-                    
-                    {%- if modifier == '+' -%}
-                        {%- set month_start = date.replace(day=1) -%}
-                        {%- set first_day_of_week = month_start.isoweekday() -%}
-                        {%- set week1_monday = month_start - timedelta(days=first_day_of_week - 1) -%}
-                        {%- set date = week1_monday + timedelta(days=(target_day - 1) + 7 * (amount - 1)) -%}
-                    {%- else -%}
-                        {%- if date.month == 12 -%}
-                            {%- set next_month = date.replace(year=date.year + 1, month=1, day=1) -%}
-                        {%- else -%}
-                            {%- set next_month = date.replace(month=date.month + 1, day=1) -%}
-                        {%- endif -%}
-                        {%- set month_end = next_month - timedelta(days=1) -%}
-                        {%- set last_day_of_week = month_end.isoweekday() -%}
-                        {%- set days_to_last = (last_day_of_week - target_day) % 7 -%}
-                        {%- set last_occurrence = month_end - timedelta(days=days_to_last) -%}
-                        {%- set date = last_occurrence - timedelta(days=7 * (amount - 1)) -%}
-                    {%- endif -%}
-                {%- elif day_type -%}
-                    {# Original occurrence-based calculation (+3Mon means 3rd Monday after base date) #}
-                    {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
-                    {%- set target_day = days[day_type] -%}
-                    {%- set current_day = date.isoweekday() -%}
-                    {%- if modifier == '+' -%}
-                        {%- set days_ahead = (target_day - current_day) if target_day >= current_day else (7 - (current_day - target_day)) -%}
-                        {%- set date = date + timedelta(days=days_ahead + 7 * (amount - 1)) -%}
-                    {%- else -%}
-                        {%- set days_back = (current_day - target_day) if current_day > target_day else (7 - (target_day - current_day)) -%}
-                        {%- set date = date - timedelta(days=days_back + 7 * (amount - 1)) -%}
-                    {%- endif -%}
+              {%- set direction = 1 if modifier == '+' else -1 -%}
+
+              {%- if unit == 'd' or (not unit and not weekday) -%}
+                {%- set date = date + timedelta(days=direction * amount) -%}
+
+              {%- elif unit == 'w' and weekday -%}
+                {# Week-based weekday offset (e.g. +3w@mon) #}
+                {%- set month_start = date.replace(day=1) -%}
+                {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
+                {%- set target = days[weekday] -%}
+                {%- if direction == 1 -%}
+                  {%- set first_day = month_start.isoweekday() -%}
+                  {%- set week1_monday = month_start - timedelta(days=first_day - 1) -%}
+                  {%- set date = week1_monday + timedelta(days=(target - 1) + 7 * (amount - 1)) -%}
+                {%- else -%}
+                  {%- set next_month = date.replace(day=28) + timedelta(days=4) -%}
+                  {%- set month_end = next_month.replace(day=1) - timedelta(days=1) -%}
+                  {%- set last_day = month_end.isoweekday() -%}
+                  {%- set days_to_last = (last_day - target) % 7 -%}
+                  {%- set last_occurrence = month_end - timedelta(days=days_to_last) -%}
+                  {%- set date = last_occurrence - timedelta(days=7 * (amount - 1)) -%}
                 {%- endif -%}
+
+              {%- elif weekday -%}
+                {# Nth weekday occurrence after base date (e.g. +3@mon) #}
+                {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
+                {%- set current = date.isoweekday() -%}
+                {%- set target = days[weekday] -%}
+
+                {%- if direction == 1 -%}
+                  {%- set days_ahead = (target - current) % 7 -%}
+                  {%- set date = date + timedelta(days=days_ahead + 7 * (amount - 1)) -%}
+                {%- else -%}
+                  {%- set days_back = (current - target) % 7 -%}
+                  {%- set date = date - timedelta(days=days_back + 7 * (amount - 1)) -%}
+                {%- endif -%}
+              {%- endif -%}
             {%- endif -%}
+
             {{- as_local(date) -}}
           {%- endif -%}
         {%- endmacro -%}
@@ -271,13 +274,13 @@ sequence:
           {%- endif -%}
         {%- endif -%}
 
-        {# Check moon phases - add this if it tickles
-         # {%- if states('sensor.moon') == "new_moon" -%}
-         #   {%- set events.special_events = events.special_events + ["a new moon"] -%}
-         # {%- elif states('sensor.moon') == "full_moon" -%}
-         #   {%- set events.special_events = events.special_events + ["a full moon"] -%}
-         # {%- endif -%}
-         #}
+        {# Check moon phases - if you have the moon integration enabled.
+        {%- if states('sensor.moon') == "new_moon" -%}
+          {%- set events.special_events = events.special_events + ["a new moon"] -%}
+        {%- elif states('sensor.moon') == "full_moon" -%}
+          {%- set events.special_events = events.special_events + ["a full moon"] -%}
+        {%- endif -%}
+        #}
 
         {{ textify_list(events.special_events) }}
   - if:
@@ -306,6 +309,71 @@ sequence:
 mode: queued
 max: 10
 icon: mdi:calendar
-description: >-
+description: |-
+  # Check For Special Day
+
   Check if today is a special day against a set of calculated and pre-set
-  special days.
+  special days and set a text helper with the decription of the day, and
+  a boolean helper if the day is special.
+
+  The special days are defined in a dictionary in the script, and can be
+  modified to add or remove special days as needed. The script also
+  calculates the date of Easter for the current year, and uses that to
+  determine the dates of Easter-related special days.
+
+  ## Features
+
+  - Calculates the date of Easter for the current year.
+  - Supports custom special days defined in a dictionary.
+  - Automatically updates helper variables in Home Assistant.
+
+  ## Usage
+
+  This script should be used by triggering it in Home Assistant to check
+  for special days and set the appropriate helper variables.
+  It should be run daily or at specific times to ensure the helpers are updated.
+
+  ## Requirements
+
+  Requires two helper variables to be defined:
+  ```
+    input_boolean.special_day - set to true if today is a special day, or false
+    input_text.special_day_text - set to the text description, or empty
+  ```
+
+  ## Special Day Syntax
+
+  The special_days dictionary uses the following syntax to specify a date:
+  ```
+  <base> [ ± <count><unit>[@<weekday>] ]
+  ```
+  where:
+  ```
+    base        Base date or Easter (Easter, 1/5, 25/12)
+    ±           Plus or minus
+    <count>     Integer number (3, 1, 4)
+    <unit>      d, w, or m (+3d, -1w)
+    @<weekday>  Optional weekday for that offset (@Mon, @Sun)
+  ```
+
+  Some examples:
+  ```
+  Easter+39d - 39 days after Easter
+  1/5+1@Mon - First Monday after 1st May
+  1/7+3w@Mon - Monday in the third week of July
+  25/12-4@Sun - 4th Sunday before Christmas
+  1/4-1@Sun - Last Sunday before April
+  6/5+2w - 2 weeks after the 6th of May
+  ```
+
+  ## Example Automation
+
+  ```yaml
+  alias: Daily Special Day Check
+  trigger:
+    - platform: time
+      at: '00:00:00'
+  action:
+    - service: script.check_for_special_day
+  mode: single
+  ``` 
