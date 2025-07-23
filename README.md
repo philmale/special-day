@@ -35,7 +35,7 @@ The script has the following documentation built into the description:
   ## Requirements
 
   Requires two helper variables to be defined:
-  ```
+  ```text
     input_boolean.special_day - set to true if today is a special day, or false
     input_text.special_day_text - set to the text description, or empty
   ```
@@ -43,11 +43,11 @@ The script has the following documentation built into the description:
   ## Special Day Syntax
 
   The special_days dictionary uses the following syntax to specify a date:
-  ```
+  ```text
   <base> [ ± <count><unit>[@<weekday>] ]
   ```
   where:
-  ```
+  ```text
     base        Base date or Easter (Easter, 1/5, 25/12)
     ±           Plus or minus
     <count>     Integer number (3, 1, 4)
@@ -56,7 +56,7 @@ The script has the following documentation built into the description:
   ```
 
   Some examples:
-  ```
+  ```text
   Easter+39d - 39 days after Easter
   1/5+1@Mon - First Monday after 1st May
   1/7+3w@Mon - Monday in the third week of July
