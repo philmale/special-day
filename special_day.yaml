@@ -68,13 +68,13 @@ sequence:
           "the start of Swan Upping week": "1/7+3w@mon",
           "Saint Swithin's Day": "15/7",
 
-          "the Summer Bank Holiday": "1/9-1@mon",
+          "the Summer Bank Holiday": "31/8-1@mon",
           "the Perseids Meteor Shower peak viewing night": "12/8",
 
           "the Feast of the Nativity of Mary": "8/9",
           "Michaelmas": "29/9",
 
-          "the day the clocks move backwards": "1/11-1@sun",
+          "the day the clocks move backwards": "31/10-1@sun",
           "Halloween": "31/10",
 
           "All Saints' Day": "1/11",
