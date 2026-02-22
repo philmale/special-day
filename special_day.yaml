@@ -45,7 +45,7 @@ sequence:
           "Super Bowl Sunday": "1/2+2@sun",
           "Valentines Day": "14/2",
 
-          "the day the clocks move forward": "1/4-1@sun",
+          "the day the clocks move forward": "1/3-1@sun",
           "St David's Day": "1/3",
           "St Patrick's Day": "17/3",
 
@@ -81,15 +81,16 @@ sequence:
           "All Souls' Day": "2/11",
           "Guy Fawkes Night": "5/11",
           "Thanksgiving": "1/11+4@thu",
+          "Black Friday": "1/11+4@fri",
           "Remembrance Day": "11/11",
           "St Andrew's Day": "30/11",
           "Remembrance Sunday": "1/11+2@sun",
 
           "the Feast of the Immaculate Conception": "8/12",
-          "the First Advent Sunday": "25/12-4@sun",
-          "the Second Advent Sunday": "25/12-3@sun",
-          "the Third Advent Sunday": "25/12-2@sun",
-          "the Fourth Advent Sunday": "25/12-1@sun",
+          "the First Advent Sunday": "24/12-3@sun",
+          "the Second Advent Sunday": "24/12-2@sun",
+          "the Third Advent Sunday": "24/12-1@sun",
+          "the Fourth Advent Sunday": "24/12-0@sun",
           "Christmas Eve": "24/12",
           "Christmas Day": "25/12",
           "Boxing Day": "26/12",
@@ -223,18 +224,24 @@ sequence:
         as_local(as_datetime('%04d-01-01T00:00:00'%(cur_year))) -%}
 
         {# Christmas Day Bank Holiday #}
-        {%- if christmas_day.isoweekday() in [6,7] and cur_date ==
-        as_local(christmas_day + timedelta(days=2)) -%}
-          {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
+        {%- if christmas_day.isoweekday() == 6 and
+          cur_date == as_local(christmas_day + timedelta(days=2)) -%}
+            {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
+        {%- elif christmas_day.isoweekday() == 7 and
+          cur_date == as_local(christmas_day + timedelta(days=1)) -%}
+            {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
         {%- endif -%}
 
         {# Boxing Day Bank Holiday #}
-        {%- if boxing_day.isoweekday() in [6,7] and cur_date ==
-        as_local(boxing_day + timedelta(days=2)) -%}
-          {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
-        {%- elif christmas_day.isoweekday() == 5 and cur_date ==
-        as_local(christmas_day + timedelta(days=3)) -%}
-          {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
+        {%- if christmas_day.isoweekday() == 6 and
+          cur_date == as_local(christmas_day + timedelta(days=3)) -%}
+            {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
+        {%- elif christmas_day.isoweekday() == 7 and
+          cur_date == as_local(christmas_day + timedelta(days=2)) -%}
+            {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
+        {%- elif christmas_day.isoweekday() == 5 and
+          cur_date == as_local(christmas_day + timedelta(days=3)) -%}
+            {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
         {%- endif -%}
 
         {# New Year's Day Bank Holiday #}
