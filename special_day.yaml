@@ -12,8 +12,11 @@ sequence:
           "Epiphany": "6/1",
           "Plough Monday": "6/1+1@mon",
           "Burns Night": "25/1",
-
-          "Shrove Monday": "easter-48d",
+          
+          "Septuagesima Sunday": "Easter-63d",
+          "Sexagesima Sunday": "Easter-56d",
+          "Quinquagesima Sunday": "Easter-49d",
+          "Shrove Monday": "Easter-48d",
           "Pancake Day": "Easter-47d",
           "Ash Wednesday": "Easter-46d",
           "the first Sunday of Lent": "Easter-42d",
@@ -40,6 +43,7 @@ sequence:
           "Ascension Sunday": "Easter+42d",
           "Pentecost": "Easter+49d",
           "Trinity Sunday": "Easter+56d",
+          "Corpus Christi": "Easter+60d",
           "the Feast of the Sacred Heart": "Easter+68d",
 
           "St Brigid's Day": "1/2",
@@ -100,6 +104,7 @@ sequence:
           "St Nicholas Day": "6/12",
           "the Feast of the Immaculate Conception": "8/12",
           "Stir-up Sunday": "24/12-5@sun",
+          "Christ the King day": "24/12-4@sun",
           "the First Advent Sunday": "24/12-3@sun",
           "the Second Advent Sunday": "24/12-2@sun",
           "the Third Advent Sunday": "24/12-1@sun",
