@@ -160,7 +160,7 @@ sequence:
         {%- endmacro -%}
 
         {%- macro get_special_date(date_str) -%}
-          {%- set pattern = '(\\d{1,2}/\\d{1,2}|easter)([+-])?(\\d+)?(d|w|m)?(?:@)?(mon|tue|wed|thu|fri|sat|sun)?' -%}
+          {%- set pattern = '(\\d{1,2}/\\d{1,2}|easter)([+-])?(\\d+)?(d|w)?(?:@)?(mon|tue|wed|thu|fri|sat|sun)?' -%}
           {%- set match = date_str | lower | regex_findall(pattern) -%}
           {%- if match -%}
             {%- set m = match[0] -%}
@@ -176,12 +176,16 @@ sequence:
               {%- set date = as_local(strptime(base_date ~ '/' ~ now().year, '%d/%m/%Y', none)) -%}
             {%- endif -%}
 
+            {%- if weekday and amount == 0 -%}
+              {%- set amount = 1 -%}
+            {%- endif -%}
+
             {%- if modifier -%}
               {%- set direction = 1 if modifier == '+' else -1 -%}
-
               {%- if unit == 'd' or (not unit and not weekday) -%}
                 {%- set date = date + timedelta(days=direction * amount) -%}
-
+              {%- elif unit == 'w' and not weekday -%}
+                {%- set date = date + timedelta(days=direction * 7 * amount) -%}
               {%- elif unit == 'w' and weekday -%}
                 {# Week-based weekday offset (e.g. +3w@mon) #}
                 {%- set month_start = date.replace(day=1) -%}
@@ -199,13 +203,11 @@ sequence:
                   {%- set last_occurrence = month_end - timedelta(days=days_to_last) -%}
                   {%- set date = last_occurrence - timedelta(days=7 * (amount - 1)) -%}
                 {%- endif -%}
-
               {%- elif weekday -%}
                 {# Nth weekday occurrence after base date (e.g. +3@mon) #}
                 {%- set days = {'mon':1,'tue':2,'wed':3,'thu':4,'fri':5,'sat':6,'sun':7} -%}
                 {%- set current = date.isoweekday() -%}
                 {%- set target = days[weekday] -%}
-
                 {%- if direction == 1 -%}
                   {%- set days_ahead = (target - current) % 7 -%}
                   {%- set date = date + timedelta(days=days_ahead + 7 * (amount - 1)) -%}
@@ -377,7 +379,7 @@ description: |-
     base        Base date or Easter (Easter, 1/5, 25/12)
     ±           Plus or minus
     <count>     Integer number (3, 1, 4)
-    <unit>      d, w, or m (+3d, -1w)
+    <unit>      d or w (+3d, -1w)
     @<weekday>  Optional weekday for that offset (@Mon, @Sun)
   ```
 
