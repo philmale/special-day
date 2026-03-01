@@ -45,7 +45,7 @@ sequence:
           "Super Bowl Sunday": "1/2+2@sun",
           "Valentines Day": "14/2",
 
-          "the day the clocks move forward": "1/3-1@sun",
+          "the day the clocks move forward": "1/4-1@sun",
           "St David's Day": "1/3",
           "St Patrick's Day": "17/3",
 
@@ -209,7 +209,7 @@ sequence:
         3, 4))) #}
 
         {%- set cur_year = cur_date.year -%}
-        {%- set easter = as_local(as_datetime(easter_date(now().year))) -%}
+        {%- set easter = as_local(as_datetime(easter_date(cur_year))) -%}
         {%- set events = namespace(special_events=[]) -%}
 
         {# Check bank holidays #}
