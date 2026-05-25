@@ -1,18 +1,32 @@
 alias: Check For Special Day
+fields:
+  force:
+    name: (OPTIONAL) Force
+    description: Force script to run even if it has been run today.
+    selector:
+      boolean: null
+    required: false
+    example: true
 sequence:
+  - condition: template
+    value_template: >
+      {{ (force is defined and force) or
+      (states('input_datetime.special_day_last_checked')
+         != now().date().isoformat()) }}
   - variables:
-      special_text: |-
+      special_text: >-
         {%- set special_days = {
           "New Year's Day": "1/1",
           "Blue Monday": "1/1+3@mon",
           "Ninth Night": "2/1",
           "Tenth Night": "3/1",
+          "the Quadrantids Meteor Shower peak viewing night": "3/1",
           "Eleventh Night": "4/1",
           "Twelfth Night": "5/1",
           "Epiphany": "6/1",
           "Plough Monday": "6/1+1@mon",
           "Burns Night": "25/1",
-          
+
           "Septuagesima Sunday": "Easter-63d",
           "Sexagesima Sunday": "Easter-56d",
           "Quinquagesima Sunday": "Easter-49d",
@@ -60,6 +74,7 @@ sequence:
           "Lady Day": "25/3",
 
           "April Fool's Day": "1/4",
+          "the Lyrids Meteor Shower peak viewing night": "22/4",
           "St George's Day": "23/4",
           "St Mark's Eve": "24/4",
           "Terry Pratchett Day": "28/4",
@@ -69,16 +84,18 @@ sequence:
           "Star Wars Day": "4/5",
           "the Revenge of the Fifth (-o-)": "5/5",
           "Coronation Day": "6/5",
+          "the Eta Aquariids Meteor Shower peak viewing night": "6/5",
           "the Spring Bank Holiday": "31/5-1@mon",
-          "Cooper's Hill Cheese-Rolling and Wake Day": "31/5-1@mon",
+          "Cooper's Hill Cheese-Rolling Day": "31/5-1@mon",
           "Royal Oak Day": "29/5",
 
           "Fathers Day": "1/6+3@sun",
-          "Trooping of the Colour": "1/6+2@sat",
+          "the Trooping of the Colour": "1/6+2@sat",
           "St John's Eve": "23/6",
           "the Nativity of John the Baptist": "24/6",
 
           "Saint Swithin's Day": "15/7",
+          "the Delta Aquariids Meteor Shower peak viewing night": "30/7",
 
           "Yorkshire Day": "1/8",
           "the Summer Bank Holiday": "31/8-1@mon",
@@ -88,27 +105,32 @@ sequence:
           "Battle of Britain Day": "15/9",
           "Michaelmas": "29/9",
 
-          "Apple Day": "21/10",
+          "Trafalgar Day": "21/10",
+          "the Orionids Meteor Shower peak viewing night": "21/10",
           "the day the clocks move backwards": "31/10-1@sun",
           "Halloween": "31/10",
 
           "All Saints' Day": "1/11",
           "All Souls' Day": "2/11",
           "Guy Fawkes Night": "5/11",
+          "Lord Mayor's Show": "1/11+2@sat",
           "Thanksgiving": "1/11+4@thu",
           "Black Friday": "1/11+4@fri",
           "Remembrance Day": "11/11",
+          "the Leonids Meteor Shower peak viewing night": "17/11",
           "St Andrew's Day": "30/11",
           "Remembrance Sunday": "1/11+2@sun",
 
           "St Nicholas Day": "6/12",
           "the Feast of the Immaculate Conception": "8/12",
+          "the Geminids Meteor Shower peak viewing night": "14/12",
           "Stir-up Sunday": "24/12-4@sun",
           "Christ the King day": "24/12-4@sun",
           "the First Advent Sunday": "24/12-3@sun",
           "the Second Advent Sunday": "24/12-2@sun",
           "the Third Advent Sunday": "24/12-1@sun",
           "the Fourth Advent Sunday": "24/12-0@sun",
+          "the Ursids Meteor Shower peak viewing night": "22/12",
           "Christmas Eve": "24/12",
           "Christmas Day": "25/12",
           "Boxing Day": "26/12",
@@ -119,7 +141,9 @@ sequence:
           "New Year's Eve": "31/12"
         } -%}
 
+
         {# DO NOT EDIT BELOW HERE #}
+
 
         {%- macro ordinal_suffix_of(i) -%}
           {%- set j = i % 10 -%}
@@ -222,28 +246,42 @@ sequence:
           {%- endif -%}
         {%- endmacro -%}
 
-        {%- set cur_date =
-        as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(now().year, now().month,
-        now().day))) -%}
 
-        {# set cur_date = as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(2025,
-        3, 4))) #}
+        {%- set cur_date = 
+          as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(now().year, now().month, now().day))) -%}
+        {# debug - set cur_date =
+
+        as_local(as_datetime('%04d-%02d-%02dT00:00:00'%(2025, 3, 4))) #}
+
 
         {%- set cur_year = cur_date.year -%}
+
         {%- set easter = as_local(as_datetime(easter_date(cur_year))) -%}
+
         {%- set events = namespace(special_events=[]) -%}
 
-        {# Check bank holidays #}
+
+        {# Check special day calendar #}
+        {# You can also setup an HA calendar called special days that will be checked here and override anything in here
+        {%- if states('calendar.special_days') == "on" -%}
+          {%- set events.special_events = events.special_events + 
+            [ state_attr('calendar.special_days', 'message') | title ] -%}  
+        {%- endif -%}
+        #}
+
+        {# Check bank holidays #} 
+
         {%- set christmas_eve =
-        as_local(as_datetime('%04d-12-24T00:00:00'%(cur_year))) -%}
+          as_local(as_datetime('%04d-12-24T00:00:00'%(cur_year))) -%}
         {%- set christmas_day =
-        as_local(as_datetime('%04d-12-25T00:00:00'%(cur_year))) -%}
+          as_local(as_datetime('%04d-12-25T00:00:00'%(cur_year))) -%}
         {%- set boxing_day =
-        as_local(as_datetime('%04d-12-26T00:00:00'%(cur_year))) -%}
+          as_local(as_datetime('%04d-12-26T00:00:00'%(cur_year))) -%}
         {%- set new_years_day =
-        as_local(as_datetime('%04d-01-01T00:00:00'%(cur_year))) -%}
+          as_local(as_datetime('%04d-01-01T00:00:00'%(cur_year))) -%}
 
         {# Christmas Day Bank Holiday #}
+
         {%- if christmas_day.isoweekday() == 6 and
           cur_date == as_local(christmas_day + timedelta(days=2)) -%}
             {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
@@ -252,7 +290,9 @@ sequence:
             {%- set events.special_events = events.special_events + ["Christmas Day Bank Holiday"] -%}
         {%- endif -%}
 
+
         {# Boxing Day Bank Holiday #}
+
         {%- if christmas_day.isoweekday() == 6 and
           cur_date == as_local(christmas_day + timedelta(days=3)) -%}
             {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
@@ -264,16 +304,21 @@ sequence:
             {%- set events.special_events = events.special_events + ["Boxing Day Bank Holiday"] -%}
         {%- endif -%}
 
-        {# New Year's Day Bank Holiday #}
-        {%- if new_years_day.isoweekday() == 6 and cur_date ==
-        as_local(new_years_day + timedelta(days=2)) -%}
-          {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
-        {%- elif new_years_day.isoweekday() == 7 and cur_date ==
-        as_local(new_years_day + timedelta(days=1)) -%}
-          {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
+
+        {# New Year's Day Bank Holiday #} 
+
+        {%- if new_years_day.isoweekday() == 6 and
+          cur_date == as_local(new_years_day + timedelta(days=2)) -%}
+            {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
+        {%- elif new_years_day.isoweekday() == 7 and
+          cur_date == as_local(new_years_day + timedelta(days=1)) -%}
+            {%- set events.special_events = events.special_events + ["New Year's Day Bank Holiday"] -%}
         {%- endif -%}
 
-        {# Check special days #}
+
+        {# Check special days #} 
+
+
         {%- for day_name, date_str in special_days.items() -%}
           {%- set special_date = get_special_date(date_str) -%}
           {%- if special_date and cur_date == as_local(as_datetime(special_date)) -%}
@@ -281,7 +326,9 @@ sequence:
           {%- endif -%}
         {%- endfor -%}
 
-        {# If not found anything then see if it's lent or advent #}
+
+        {# If not found anything then see if it's lent or advent #} 
+
         {%- if events.special_events | length == 0  -%}
           {# Check for days of lent #}
           {%- set ash_wednesday = as_local(easter - timedelta(days=46)) -%}
@@ -289,19 +336,26 @@ sequence:
             {%- set days_since_ash_wednesday = day_of(ash_wednesday, cur_date) | int(0) -%}
             {%- set sundays_since_ash_wednesday = ((days_since_ash_wednesday + 2) // 7) -%}
             {%- set day_of_lent = days_since_ash_wednesday - sundays_since_ash_wednesday -%}
-            {%- set events.special_events = events.special_events + ["the " + ordinal_suffix_of(day_of_lent) + " day of Lent"] -%}
+            {%- set events.special_events = events.special_events + 
+              ["the " + ordinal_suffix_of(day_of_lent) + " day of Lent"] -%}
             {# If you count sundays as part of lent... #}
-            {# set events.special_events = events.special_events + ["the " + ordinal_suffix_of((day_of(ash_wednesday, cur_date)|int(0))) + " day of Lent"] #}
+            {# set events.special_events = events.special_events +
+              ["the " + ordinal_suffix_of((day_of(ash_wednesday, cur_date)|int(0))) + " day of Lent"] #}
           {%- endif -%}
 
-          {# Check for days of advent #}
-          {%- set first_advent = as_local(christmas_day - timedelta(days = 21 + (christmas_day.isoweekday()))) -%}
+          {# Check for days of advent #} 
+          {%- set first_advent =
+            as_local(christmas_day - timedelta(days = 21 + (christmas_day.isoweekday()))) -%}
           {%- if cur_date > first_advent and cur_date < christmas_eve -%}
-            {%- set events.special_events = events.special_events + ["the " + ordinal_suffix_of((day_of(first_advent, cur_date)|int(0))) + " day of Advent"] -%}
+            {%- set events.special_events = events.special_events +
+              ["the " + ordinal_suffix_of((day_of(first_advent, cur_date)|int(0))) + " day of Advent"] -%}
           {%- endif -%}
         {%- endif -%}
 
-        {# Check moon phases - if you have the moon integration enabled.
+
+
+        {# Check moon phases #} 
+        {# Note: this relies on the moon sensor being configured with the same timezone as the script, otherwise it may show the wrong phase for a day.
         {%- if states('sensor.moon') == "new_moon" -%}
           {%- set events.special_events = events.special_events + ["a new moon"] -%}
         {%- elif states('sensor.moon') == "full_moon" -%}
@@ -309,30 +363,32 @@ sequence:
         {%- endif -%}
         #}
 
+
         {{ textify_list(events.special_events) }}
+  - data:
+      value: "{{ special_text }}"
+    target:
+      entity_id: input_text.special_day_text
+    action: input_text.set_value
   - if:
       - condition: template
         value_template: "{{ special_text != '' }}"
     then:
-      - data:
-          value: "{{ special_text }}"
-        target:
-          entity_id: input_text.special_day_text
-        action: input_text.set_value
       - data: {}
         target:
           entity_id: input_boolean.special_day
         action: input_boolean.turn_on
     else:
-      - data:
-          value: ""
-        target:
-          entity_id: input_text.special_day_text
-        action: input_text.set_value
       - data: {}
         target:
           entity_id: input_boolean.special_day
         action: input_boolean.turn_off
+  - data:
+      date: "{{ now().date().isoformat() }}"
+    action: input_datetime.set_datetime
+    target:
+      entity_id:
+        - input_datetime.special_day_last_checked
 mode: queued
 max: 10
 icon: mdi:calendar
@@ -348,6 +404,8 @@ description: |-
   calculates the date of Easter for the current year, and uses that to
   determine the dates of Easter-related special days.
 
+  The script self-locks to only operate once a day.
+
   ## Features
 
   - Calculates the date of Easter for the current year.
@@ -362,10 +420,11 @@ description: |-
 
   ## Requirements
 
-  Requires two helper variables to be defined:
+  Requires three Home Assistant helpers to be defined:
   ```text
     input_boolean.special_day - set to true if today is a special day, or false
     input_text.special_day_text - set to the text description, or empty
+    input_datetime.special_day_last_checked - date of last execution
   ```
 
   ## Special Day Syntax
@@ -379,7 +438,7 @@ description: |-
     base        Base date or Easter (Easter, 1/5, 25/12)
     ±           Plus or minus
     <count>     Integer number (3, 1, 4)
-    <unit>      d or w (+3d, -1w)
+    <unit>      d, or w (+3d, -1w)
     @<weekday>  Optional weekday for that offset (@Mon, @Sun)
   ```
 

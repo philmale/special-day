@@ -7,6 +7,50 @@ I run this script once a day in the morning (around 08:00 on a time trigger auto
 
 It's run once a day, so it's not designed to be a super optimal script - it's written to be REALLY simple to read and add and play with over time - so everything is very 'wordy' for a reason.
 
+The script will check a datetime helper to make sure it only runs once a day. You can set the `force` field to make it run regardless.
+
+If you create a calendar in Home Assistant called `Special Days` you can also put all day events in there and they will be picked up if you
+uncomment the marked bit of the script. I use that to let the family add things and to track birthdays when you want them to fire at midnight.
+
+Here is the automation I use to trigger the script, if it fires at midnight to say 'Happy Birthday' then it's still safe to run at 08:00 because the
+datetime helper check will stop it running. If it hasn't been triggered at mignight then normal 08:00 execution happens.
+
+This means things like birthdays result in the input_boolean.special_day being turned on at midnight from the Special Days calendar, and less
+personal things like 'Bank Holiday' get notified at 08:00.
+
+```yaml
+alias: Special Day Controller
+description: >-
+  Check for a special day, either in the Special Days calendar, or by running
+  the Check For Special Days script and set up the Special Day colours.
+triggers:
+  - trigger: time
+    at: "08:00:00"
+    id: Time
+  - entity_id:
+      - calendar.special_days
+    trigger: state
+    to: "on"
+    from: "off"
+    id: Calendar
+  - entity_id: input_boolean.special_days_active
+    trigger: state
+    id: Switch
+conditions: []
+actions:
+  - action: script.check_for_special_day
+    data: {}
+  - action: script.special_day_colour_set
+    data: {}
+  - action: script.special_day_announce
+    metadata: {}
+    data: {}
+mode: single
+```
+
+The `script.special_day_colour_set` and `script.special_day_announce` are simple little scripts that set the colour of our outside house lights to 
+match the special day when they come on in the evening, and the announce simply says 'Its `input_text.special_day_text`' over our Alexa's.
+
 The script has the following documentation built into the description:
 
   # Check For Special Day
@@ -30,14 +74,15 @@ The script has the following documentation built into the description:
 
   This script should be used by triggering it in Home Assistant to check
   for special days and set the appropriate helper variables.
-  It should be run daily or at specific times to ensure the helpers are updated.
+  It should be run daily at specific times to ensure the helpers are updated.
 
   ## Requirements
 
-  Requires two helper variables to be defined:
+  Requires three Home Assistnt helpers to be defined:
   ```text
     input_boolean.special_day - set to true if today is a special day, or false
     input_text.special_day_text - set to the text description, or empty
+    input_datetime.special_day_last_checked - date of last execution
   ```
 
   ## Special Day Syntax
