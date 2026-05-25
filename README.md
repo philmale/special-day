@@ -61,7 +61,7 @@ The script has the following documentation built into the description:
   1/5+1@Mon - First Monday after 1st May
   1/7+3w@Mon - Monday in the third week of July
   25/12-4@Sun - 4th Sunday before Christmas
-  1/4-1@Sun - Last Sunday before April
+  31/3-1@Sun - Last Sunday of March (use end-of-month base, not 1/4, to avoid edge case when 1 Apr is Sunday)
   6/5+2w - 2 weeks after the 6th of May
   ```
 
